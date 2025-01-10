@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3 uid="uid://b461x0r28au1"]
+
+[ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_qrcqn"]
+
+[node name="Main Menu" type="Node2D"]
+script = ExtResource("1_qrcqn")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 800.0
+offset_bottom = 600.0
+color = Color(0, 0.0627451, 0.160784, 1)
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 347.5
+offset_right = 452.5
+offset_bottom = 23.0
+grow_horizontal = 2
+scale = Vector2(2.515, 2.515)
+pivot_offset = Vector2(52.405, 0)
+text = "Deckers Deck"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 227.0
+offset_top = 95.0
+offset_right = 568.0
+offset_bottom = 461.0
+
+[node name="HostLobbyButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="JoinLobbyButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="PlaySoloButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Credits" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="VBoxContainer/HostLobbyButton" to="." method="_on_host_lobby_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PlaySoloButton" to="." method="_on_play_solo_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/Credits" to="." method="_on_credits_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
