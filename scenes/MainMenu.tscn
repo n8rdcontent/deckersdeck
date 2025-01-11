@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b461x0r28au1"]
+[gd_scene load_steps=3 format=3 uid="uid://b461x0r28au1"]
 
 [ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_qrcqn"]
+[ext_resource type="AudioStream" uid="uid://cofyamsctdigr" path="res://assets/sounds/African1.mp3" id="2_hebms"]
 
 [node name="Main Menu" type="Node2D"]
 script = ExtResource("1_qrcqn")
@@ -67,20 +68,6 @@ scale = Vector2(1.145, 1.145)
 pivot_offset = Vector2(52.405, 0)
 text = "Coming Soon!"
 
-[node name="Label5" type="Label" parent="."]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 534.0
-offset_top = 270.0
-offset_right = 644.0
-offset_bottom = 293.0
-grow_horizontal = 2
-rotation = 0.148353
-scale = Vector2(1.145, 1.145)
-pivot_offset = Vector2(52.405, 0)
-text = "Coming Soon!"
-
 [node name="Label6" type="Label" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
@@ -103,20 +90,6 @@ offset_left = 536.0
 offset_top = 431.0
 offset_right = 646.0
 offset_bottom = 454.0
-grow_horizontal = 2
-rotation = 0.148353
-scale = Vector2(1.145, 1.145)
-pivot_offset = Vector2(52.405, 0)
-text = "Coming Soon!"
-
-[node name="Label8" type="Label" parent="."]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 529.0
-offset_top = 504.0
-offset_right = 639.0
-offset_bottom = 527.0
 grow_horizontal = 2
 rotation = 0.148353
 scale = Vector2(1.145, 1.145)
@@ -153,6 +126,10 @@ text = "Credits"
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_hebms")
+volume_db = 8.432
 
 [connection signal="pressed" from="VBoxContainer/HostLobbyButton" to="." method="_on_host_lobby_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
