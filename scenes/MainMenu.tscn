@@ -14,37 +14,145 @@ color = Color(0, 0.0627451, 0.160784, 1)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 347.5
-offset_right = 452.5
-offset_bottom = 23.0
+offset_left = 348.0
+offset_top = 19.0
+offset_right = 453.0
+offset_bottom = 42.0
 grow_horizontal = 2
 scale = Vector2(2.515, 2.515)
 pivot_offset = Vector2(52.405, 0)
+theme_override_colors/font_color = Color(1, 0.578368, 0.516824, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 text = "Deckers Deck"
 
+[node name="Label2" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 11.625
+offset_top = 572.14
+offset_right = 300.625
+offset_bottom = 595.14
+grow_horizontal = 2
+scale = Vector2(1.145, 1.145)
+pivot_offset = Vector2(52.405, 0)
+text = "This is just a template - Made by n8rd"
+
+[node name="Label3" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 530.0
+offset_top = 115.0
+offset_right = 640.0
+offset_bottom = 138.0
+grow_horizontal = 2
+rotation = 0.148353
+scale = Vector2(1.145, 1.145)
+pivot_offset = Vector2(52.405, 0)
+text = "Coming Soon!"
+
+[node name="Label4" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 533.0
+offset_top = 192.0
+offset_right = 643.0
+offset_bottom = 215.0
+grow_horizontal = 2
+rotation = 0.148353
+scale = Vector2(1.145, 1.145)
+pivot_offset = Vector2(52.405, 0)
+text = "Coming Soon!"
+
+[node name="Label5" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 534.0
+offset_top = 270.0
+offset_right = 644.0
+offset_bottom = 293.0
+grow_horizontal = 2
+rotation = 0.148353
+scale = Vector2(1.145, 1.145)
+pivot_offset = Vector2(52.405, 0)
+text = "Coming Soon!"
+
+[node name="Label6" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 535.0
+offset_top = 353.0
+offset_right = 645.0
+offset_bottom = 376.0
+grow_horizontal = 2
+rotation = 0.148353
+scale = Vector2(1.145, 1.145)
+pivot_offset = Vector2(52.405, 0)
+text = "Coming Soon!"
+
+[node name="Label7" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 536.0
+offset_top = 431.0
+offset_right = 646.0
+offset_bottom = 454.0
+grow_horizontal = 2
+rotation = 0.148353
+scale = Vector2(1.145, 1.145)
+pivot_offset = Vector2(52.405, 0)
+text = "Coming Soon!"
+
+[node name="Label8" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 529.0
+offset_top = 504.0
+offset_right = 639.0
+offset_bottom = 527.0
+grow_horizontal = 2
+rotation = 0.148353
+scale = Vector2(1.145, 1.145)
+pivot_offset = Vector2(52.405, 0)
+text = "Coming Soon!"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_left = 227.0
-offset_top = 95.0
-offset_right = 568.0
-offset_bottom = 461.0
+offset_left = 290.545
+offset_top = 90.65
+offset_right = 386.545
+offset_bottom = 296.65
+scale = Vector2(2.21, 2.21)
 
 [node name="HostLobbyButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+text = "Host Lobby"
 
 [node name="JoinLobbyButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+text = "Join Lobby"
 
 [node name="PlaySoloButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+text = "Play Solo"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+text = "Settings"
 
 [node name="Credits" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+text = "Credits"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/HostLobbyButton" to="." method="_on_host_lobby_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
