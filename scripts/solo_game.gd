@@ -9,24 +9,6 @@ signal player_selected_card
 var whosTurn = "player"
 var chosencard = ""
 
-var testArray = [
-	{
-		name = "Jack",
-		age = 21
-	},{
-		name = "Jill",
-		age = 44
-	},{
-		name = "Jonas",
-		age = 32
-	},{
-		name = "James",
-		age = 17
-	},
-]
-
-
-
 # Called when the node enters the scene tree for the first time.
 # Game State
 var player_hand = []
@@ -37,27 +19,24 @@ var middleDeck = []
 func get_card_texture(card_name: String) -> Texture:
 	# Example: card_name should match the filename (e.g., "2_of_hearts.png")
 	var texture_path = "res://assets/sprites/cards/%s.png" % card_name
-	print("Loading texture: ", texture_path)
+	'print("Loading texture: ", texture_path)'
 	var texture = load(texture_path)
-	if texture == null:
-		print("Error: Texture not found for card: ", card_name)
+	'if texture == null:
+		print("Error: Texture not found for card: ", card_name)'
 	return texture
 
 
 func _ready():
 	print("Solo mode started!")
-	print(testArray)
-	print(testArray[0].name)
-	print(testArray[0].age)
 	ButtonSound.play()
 	_initialize_game()
 	ButtonSound.play()
 
 func _initialize_game():
 	# Placeholder: Initialize the deck and hands
-	deck = _create_deck()
+	deck = createTestDeck()
 	deck.shuffle()
-	chosencard = deck.pick_random()
+	chosencard = deck.pick_random().name
 	_deal_cards()
 	print("Player Hand: ", player_hand)
 	print("Bot Hand: ", bot_hand)
@@ -66,12 +45,34 @@ func _create_deck():
 	# Create a placeholder deck (e.g., numbers 1-10 for simplicity)
 	return ["A2", "A4", "A5", "A7", "K2", "K4", "K5", "K7", "Q2", "Q4", "Q5", "Q7"]
 
-func addCardToDeck(card_name: String, deckToAdd: Array, value: int):
+func createTestDeck():
+	var testDeck = []
+	addCardToDeck("A2", testDeck, 14, "Ace")
+	addCardToDeck("A4", testDeck, 14, "Ace")
+	addCardToDeck("A5", testDeck, 14, "Ace")
+	addCardToDeck("A7", testDeck, 14, "Ace")
+	addCardToDeck("K2", testDeck, 13, "King")
+	addCardToDeck("K4", testDeck, 13, "King")
+	addCardToDeck("K5", testDeck, 13, "King")
+	addCardToDeck("K7", testDeck, 13, "King")
+	addCardToDeck("Q2", testDeck, 12, "Queen")
+	addCardToDeck("Q4", testDeck, 12, "Queen")
+	addCardToDeck("Q5", testDeck, 12, "Queen")
+	addCardToDeck("Q7", testDeck, 12, "Queen")
+	return testDeck
+
+
+func addCardToDeck(card_name: String, deckToAdd: Array, value: int, cardType: String):
 	deckToAdd.append({
 		name = card_name,
-		hidden = false,
-		cardValue = value
+		isHidden = false,
+		cardValue = value,
+		type = cardType
 	})
+
+func wait(seconds: float) -> void:
+	await get_tree().create_timer(seconds).timeout
+
 
 func _deal_cards():
 	# Deal cards to the player and bot
@@ -83,8 +84,8 @@ func _deal_cards():
 		bot_hand.append(bot_card)
 		
 		# Add card visuals
-		_add_card_to_hand(PlayerHand, player_card)
-		_add_card_to_hand(BotHand, bot_card, true)
+		_add_card_to_hand(PlayerHand, player_card.name)
+		_add_card_to_hand(BotHand, bot_card.name, true)
 
 func _add_card_to_hand(hand_node: Node, card_name: String, hidden: bool = false):
 	var card_texture = get_card_texture(card_name)
@@ -115,16 +116,25 @@ func _add_card_to_hand(hand_node: Node, card_name: String, hidden: bool = false)
 # Function to handle card clicks
 func _on_card_clicked(event: InputEvent, card_name: String):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		 # Check if the clicked card belongs to the player
-		if card_name not in player_hand:
+		# Check if the clicked card belongs to the player
+		var is_player_card = false
+		for card in player_hand:
+			if card.name == card_name:
+				is_player_card = true
+				break
+
+		if not is_player_card:
 			print("Cannot click on bot's card")
+			print("Player's hand:", player_hand)
+			print("Clicked card:", card_name)
 			return
-		
+
 		# Player clicked on this card
 		print("Card clicked: ", card_name)
-		
+
 		# Perform logic for the card click
 		_handle_card_selection(card_name)
+
 
 
 # Handle card selection
@@ -138,22 +148,34 @@ func _handle_card_selection(card_name: String):
 
 
 func _move_card_to_middle(card_name: String):
-	# Placeholder for moving the card to the middle
 	print("Moving card to the middle: ", card_name)
 	
 	# Remove the card from the player's hand
-	if card_name in player_hand:
-		player_hand.erase(card_name)
-		_remove_card_from_hand(PlayerHand, card_name)
-	elif card_name in bot_hand:
-		bot_hand.erase(card_name)
-		_remove_card_from_hand(BotHand, card_name)
+	var card_to_remove = null
+	if whosTurn == "player":
+		for card in player_hand:
+			if card.name == card_name:
+				card_to_remove = card
+				break
+		if card_to_remove != null:
+			player_hand.erase(card_to_remove)
+			_remove_card_from_hand(PlayerHand, card_name)
 	
+	elif whosTurn == "bot":
+		for card in bot_hand:
+			if card.name == card_name:
+				card_to_remove = card
+				break
+		if card_to_remove != null:
+			bot_hand.erase(card_to_remove)
+			_remove_card_from_hand(BotHand, card_name)
+
 	# Add the card to the middle deck
 	middleDeck.append(card_name)
 	print("Middle Deck: ", middleDeck)
 	updateMiddleDeck(card_name)
 	nextTurn()
+
 
 func _remove_card_from_hand(hand_node: Node, card_name: String):
 	for card_sprite in hand_node.get_children():
@@ -174,9 +196,9 @@ func updateMiddleDeck(card_name: String):
 		
 func botTurn():
 	if whosTurn == "bot":
-		var Botschosencard = bot_hand.pick_random()
-		print(Botschosencard + " is bot's chosen card")
-		_move_card_to_middle(Botschosencard)
+		var botsChosenCard = bot_hand.pick_random()
+		print(botsChosenCard.name + " is bot's chosen card")
+		_move_card_to_middle(botsChosenCard.name)
 
 func nextTurn():
 	if whosTurn == "bot":
@@ -191,7 +213,7 @@ func _process(delta: float) -> void:
 	
 	
 func gameLoop():
-	print("Game Started")
+	'print("Game Started")'
 	print("Chosen Card: " + chosencard[0])
 	while true:
 		if whosTurn == "player":
@@ -200,7 +222,7 @@ func gameLoop():
 		elif whosTurn == "bot":
 			print("Bot's Turn")
 			botTurn()
-			await(get_tree().create_timer(0.1).timeout)
+			wait(1)
 		else :
 			break
 
