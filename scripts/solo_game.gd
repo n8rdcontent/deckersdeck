@@ -9,6 +9,24 @@ signal player_selected_card
 var whosTurn = "player"
 var chosencard = ""
 
+var testArray = [
+	{
+		name = "Jack",
+		age = 21
+	},{
+		name = "Jill",
+		age = 44
+	},{
+		name = "Jonas",
+		age = 32
+	},{
+		name = "James",
+		age = 17
+	},
+]
+
+
+
 # Called when the node enters the scene tree for the first time.
 # Game State
 var player_hand = []
@@ -28,9 +46,12 @@ func get_card_texture(card_name: String) -> Texture:
 
 func _ready():
 	print("Solo mode started!")
+	print(testArray)
+	print(testArray[0].name)
+	print(testArray[0].age)
 	ButtonSound.play()
 	_initialize_game()
-	gameLoop()
+	ButtonSound.play()
 
 func _initialize_game():
 	# Placeholder: Initialize the deck and hands
@@ -44,6 +65,13 @@ func _initialize_game():
 func _create_deck():
 	# Create a placeholder deck (e.g., numbers 1-10 for simplicity)
 	return ["A2", "A4", "A5", "A7", "K2", "K4", "K5", "K7", "Q2", "Q4", "Q5", "Q7"]
+
+func addCardToDeck(card_name: String, deckToAdd: Array, value: int):
+	deckToAdd.append({
+		name = card_name,
+		hidden = false,
+		cardValue = value
+	})
 
 func _deal_cards():
 	# Deal cards to the player and bot
