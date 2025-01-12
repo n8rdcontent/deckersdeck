@@ -37,6 +37,7 @@ func _initialize_game():
 	deck = createTestDeck()
 	deck.shuffle()
 	chosencard = deck.pick_random().name
+	print("Chosen Card: " + chosencard[0])
 	_deal_cards()
 	print("Player Hand: ", player_hand)
 	print("Bot Hand: ", bot_hand)
@@ -69,9 +70,6 @@ func addCardToDeck(card_name: String, deckToAdd: Array, value: int, cardType: St
 		cardValue = value,
 		type = cardType
 	})
-
-func wait(seconds: float) -> void:
-	await get_tree().create_timer(seconds).timeout
 
 
 func _deal_cards():
@@ -146,6 +144,12 @@ func _handle_card_selection(card_name: String):
 		_move_card_to_middle(card_name)
 		emit_signal("player_selected_card")
 
+func getCardObject(card_name: String):
+	for card in player_hand:
+		if card.name == card_name:
+			return card
+	return null
+
 
 func _move_card_to_middle(card_name: String):
 	print("Moving card to the middle: ", card_name)
@@ -198,6 +202,7 @@ func botTurn():
 	if whosTurn == "bot":
 		var botsChosenCard = bot_hand.pick_random()
 		print(botsChosenCard.name + " is bot's chosen card")
+		await get_tree().create_timer(2.0).timeout
 		_move_card_to_middle(botsChosenCard.name)
 
 func nextTurn():
@@ -222,7 +227,6 @@ func gameLoop():
 		elif whosTurn == "bot":
 			print("Bot's Turn")
 			botTurn()
-			wait(1)
 		else :
 			break
 
