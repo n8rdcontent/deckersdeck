@@ -52,8 +52,7 @@ func _initialize_game():
 	deck.shuffle()
 	set_chosen_card()
 	_deal_cards()
-	print("Player Hand: ", player_hand)
-	print("Bot Hand: ", bot_hand)
+	
 	
 	
 
