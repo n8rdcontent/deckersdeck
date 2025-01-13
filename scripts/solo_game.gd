@@ -1,4 +1,5 @@
 extends Node2D
+
 @onready var PlayerHand = $Control/PlayerHand
 @onready var BotHand = $Control/BotHand
 @onready var DeckArea = $Control/DeckArea
@@ -10,23 +11,30 @@ signal player_selected_card
 var whosTurn = "player"
 var chosencard = ""
 
-# Called when the node enters the scene tree for the first time.
 # Game State
 var player_hand = []
 var bot_hand = []
 var deck = []
 var middleDeck = []
 
-func get_card_texture(card: Object) -> Texture:
-	# Example: card_name should match the filename (e.g., "2_of_hearts.png")
+# Define the Card class
+class Card:
+	var name: String
+	var isHidden: bool
+	var cardValue: int
+	var type: String
+
+	func _init(_name: String, _value: int, _type: String, _hidden: bool = false):
+		name = _name
+		cardValue = _value
+		type = _type
+		isHidden = _hidden
+
+func get_card_texture(card: Card) -> Texture:
 	var card_name = card.name
 	var texture_path = "res://assets/sprites/cards/%s.png" % card_name
-	'print("Loading texture: ", texture_path)'
 	var texture = load(texture_path)
-	'if texture == null:
-		print("Error: Texture not found for card: ", card_name)'
 	return texture
-
 
 func _ready():
 	print("Solo mode started!")
@@ -35,16 +43,16 @@ func _ready():
 	ButtonSound.play()
 
 func _initialize_game():
-	# Placeholder: Initialize the deck and hands
-	deck = createTestDeck()
+	deck = create_test_deck()
 	deck.shuffle()
-	setChosenCard()
+	set_chosen_card()
 	_deal_cards()
 	print("Player Hand: ", player_hand)
 	print("Bot Hand: ", bot_hand)
 
-func setChosenCard():
-	chosencard = deck.pick_random().name
+func set_chosen_card():
+	var random_card = deck.pick_random()
+	chosencard = random_card.name
 	print("Chosen Card: " + chosencard[0])
 	if chosencard[0] == "A":
 		chosenCardLabel.text = "ACE"
@@ -53,48 +61,34 @@ func setChosenCard():
 	elif chosencard[0] == "Q":
 		chosenCardLabel.text = "QUEEN"
 
-func _create_deck():
-	# Create a placeholder deck (e.g., numbers 1-10 for simplicity)
-	return ["A2", "A4", "A5", "A7", "K2", "K4", "K5", "K7", "Q2", "Q4", "Q5", "Q7"]
-
-func createTestDeck():
+func create_test_deck() -> Array:
 	var testDeck = []
-	addCardToDeck("A2", testDeck, 14, "Ace")
-	addCardToDeck("A4", testDeck, 14, "Ace")
-	addCardToDeck("A5", testDeck, 14, "Ace")
-	addCardToDeck("A7", testDeck, 14, "Ace")
-	addCardToDeck("K2", testDeck, 13, "King")
-	addCardToDeck("K4", testDeck, 13, "King")
-	addCardToDeck("K5", testDeck, 13, "King")
-	addCardToDeck("K7", testDeck, 13, "King")
-	addCardToDeck("Q2", testDeck, 12, "Queen")
-	addCardToDeck("Q4", testDeck, 12, "Queen")
-	addCardToDeck("Q5", testDeck, 12, "Queen")
-	addCardToDeck("Q7", testDeck, 12, "Queen")
+	add_card_to_deck("A2", testDeck, 14, "Ace")
+	add_card_to_deck("A4", testDeck, 14, "Ace")
+	add_card_to_deck("A5", testDeck, 14, "Ace")
+	add_card_to_deck("A7", testDeck, 14, "Ace")
+	add_card_to_deck("K2", testDeck, 13, "King")
+	add_card_to_deck("K4", testDeck, 13, "King")
+	add_card_to_deck("K5", testDeck, 13, "King")
+	add_card_to_deck("K7", testDeck, 13, "King")
+	add_card_to_deck("Q2", testDeck, 12, "Queen")
+	add_card_to_deck("Q4", testDeck, 12, "Queen")
+	add_card_to_deck("Q5", testDeck, 12, "Queen")
+	add_card_to_deck("Q7", testDeck, 12, "Queen")
 	return testDeck
 
-
-func addCardToDeck(card_name: String, deckToAdd: Array, value: int, cardType: String):
-	deckToAdd.append({
-		name = card_name,
-		isHidden = false,
-		cardValue = value,
-		type = cardType
-	})
-
+func add_card_to_deck(card_name: String, deck_to_add: Array, value: int, card_type: String):
+	var card = Card.new(card_name, value, card_type)
+	deck_to_add.append(card)
 
 func _deal_cards():
-	# Deal cards to the player and bot
 	await get_tree().create_timer(0.5).timeout
 	for i in range(5):  # Example: 5 cards each
-		
-		var player_card = deck.pop_back()
-		var bot_card = deck.pop_back()
-		
+		var player_card = deck.pop_back() as Card
+		var bot_card = deck.pop_back() as Card
 		
 		player_hand.append(player_card)
 		bot_hand.append(bot_card)
-		
 		
 		# Add card visuals
 		_add_card_to_hand(PlayerHand, player_card)
@@ -102,7 +96,7 @@ func _deal_cards():
 		_add_card_to_hand(BotHand, bot_card, true)
 		await get_tree().create_timer(0.2).timeout
 
-func _add_card_to_hand(hand_node: Node, card: Object, hidden: bool = false):
+func _add_card_to_hand(hand_node: Node, card: Card, hidden: bool = false):
 	var card_texture = get_card_texture(card)
 	if card_texture == null:
 		print("Error: Failed to load texture for card: ", card.name)
@@ -112,28 +106,16 @@ func _add_card_to_hand(hand_node: Node, card: Object, hidden: bool = false):
 	card_sprite.texture = card_texture
 	
 	if hidden:
-		# Use a card back texture for hidden cards (e.g., "card_back.png")
 		card_sprite.texture = preload("res://assets/sprites/cards/Back4.png")
 	
-	# Set the card's name for reference
 	card_sprite.name = card.name
-	
-	# Enable input for the card sprite
 	card_sprite.mouse_filter = Control.MOUSE_FILTER_PASS
-	
-	# Connect input_event signal to detect clicks
 	card_sprite.connect("gui_input", Callable(self, "_on_card_clicked").bind(card))
-	
-	# Add the card sprite to the hand
 	hand_node.add_child(card_sprite)
 
-
-# Function to handle card clicks
-func _on_card_clicked(event: InputEvent, card: Object):
+func _on_card_clicked(event: InputEvent, card: Card):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		# Check if the clicked card belongs to the player
 		var is_player_card = false
-		
 		for card2 in player_hand:
 			if card2.name == card.name:
 				is_player_card = true
@@ -145,47 +127,18 @@ func _on_card_clicked(event: InputEvent, card: Object):
 			print("Clicked card:", card.name)
 			return
 
-		# Player clicked on this card
 		print("Card clicked: ", card.name)
+		_handle_card_selection(card)
 
-		# Perform logic for the card click
-		_handle_card_selection(card.name)
-
-func _on_button_pressed() -> void:
+func _handle_card_selection(card: Card):
 	if whosTurn == "player":
-		print("Player called liar")
-		if middleDeck.size() > 0:
-			# Assuming middleDeck and chosencard are arrays of card objects
-			if middleDeck[0].name != chosencard[0].name:
-				print("Bot got exposed")
-			else:
-				print("Bot was telling the truth")
-		else:
-			print("No card played yet")
-			
-
-
-# Handle card selection
-func _handle_card_selection(card_name: String):
-	# Example: Player puts this card in the middle
-	if whosTurn == "player":
-		#whosTurn = "bot"
-		print("Player selected card: ", card_name)
+		print("Player selected card: ", card.name)
 		ButtonSound.play()
-		_move_card_to_middle(card_name)
+		_move_card_to_middle(card)
 		emit_signal("player_selected_card")
 
-func getCardObjectFromPlayer(card_name: String):
-	for card in player_hand:
-		if card.name == card_name:
-			return card
-	return null
-
-
-func _move_card_to_middle(card: Object):
+func _move_card_to_middle(card: Card):
 	print("Moving card to the middle: ", card.name)
-	
-	# Remove the card from the player's hand
 	var card_to_remove = null
 	if whosTurn == "player":
 		for card2 in player_hand:
@@ -194,8 +147,7 @@ func _move_card_to_middle(card: Object):
 				break
 		if card_to_remove != null:
 			player_hand.erase(card_to_remove)
-			_remove_card_from_hand(PlayerHand, card.name)
-	
+			_remove_card_from_hand(PlayerHand, card_to_remove)
 	elif whosTurn == "bot":
 		for card2 in bot_hand:
 			if card2.name == card.name:
@@ -203,23 +155,20 @@ func _move_card_to_middle(card: Object):
 				break
 		if card_to_remove != null:
 			bot_hand.erase(card_to_remove)
-			_remove_card_from_hand(BotHand, card.name)
+			_remove_card_from_hand(BotHand, card_to_remove)
 
-	# Add the card to the middle deck
-	middleDeck.append(card_name)
-	print("Middle Deck: ", middleDeck)
-	updateMiddleDeck(card_name)
-	nextTurn()
+	middleDeck.append(card)
+	update_middle_deck(card)
+	next_turn()
 
-
-func _remove_card_from_hand(hand_node: Node, card_name: String):
+func _remove_card_from_hand(hand_node: Node, card: Card):
 	for card_sprite in hand_node.get_children():
-		if card_sprite.name == card_name:
+		if card_sprite.name == card.name:
 			hand_node.remove_child(card_sprite)
 			card_sprite.queue_free()
 			break
 
-func updateMiddleDeck(card: Object):
+func update_middle_deck(card: Card):
 	var card_texture = get_card_texture(card)
 	if card_texture == null:
 		print("Error: Failed to load texture for card: ", card.name)
@@ -228,60 +177,18 @@ func updateMiddleDeck(card: Object):
 	var card_sprite = TextureRect.new()
 	card_sprite.texture = card_texture
 	DeckArea.add_child(card_sprite)
-		
-func botTurn():
+
+func bot_turn():
 	if whosTurn == "bot":
-		var botsChosenCard = bot_hand.pick_random()
-		print(botsChosenCard.name + " is bot's chosen card")
+		var bots_chosen_card = bot_hand.pick_random()
+		print(bots_chosen_card.name + " is bot's chosen card")
 		await get_tree().create_timer(2.0).timeout
 		ButtonSound.play()
-		_move_card_to_middle(botsChosenCard.name)
+		_move_card_to_middle(bots_chosen_card)
 
-func nextTurn():
+func next_turn():
 	if whosTurn == "bot":
 		whosTurn = "player"
 	elif whosTurn == "player":
 		whosTurn = "bot"
-		botTurn()
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-	
-	
-func gameLoop():
-	'print("Game Started")'
-	while true:
-		if whosTurn == "player":
-			print("Player's Turn")
-			await player_selected_card
-		elif whosTurn == "bot":
-			print("Bot's Turn")
-			botTurn()
-		else :
-			break
-
-		if len(player_hand) == 0:
-			print("Player Wins")
-			break
-		elif len(bot_hand) == 0:
-			print("Bot Wins")
-			break
-		else:
-			pass
-
-	
-	
-#Everybody gets 5 cards	+
-#Game Chooses between King Queens or Aces +
-#Player Starts + 
-#Player chooses a card, and puts it in the middle +
-#Bot can either call liar, or choose a card, and put it in the middle.
-#If the bot calls liar, the card is flipped, and if the bot is correct, the player draws a card.
-#If the bot is wrong, the bot draws a card.
-#If the bot chooses a card, the player can either call liar, or choose a card, and put it in the middle.
-#If the player calls liar, the card is flipped, and if the player is correct, the bot draws a card.
-#If the player is wrong, the player draws a card.
-#This runs until one of the players runs out of cards.
-#That player wins
-#If the deck runs out of cards, the one with the most cards wins/ or the one with the most of the chosen card wins. or least cards wins, or least of the chosen card wins or, rock paper scissors.
+		bot_turn()
