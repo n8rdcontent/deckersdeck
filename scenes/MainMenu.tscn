@@ -1,44 +1,31 @@
-[gd_scene load_steps=3 format=3 uid="uid://b461x0r28au1"]
+[gd_scene load_steps=4 format=3 uid="uid://b461x0r28au1"]
 
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_qrcqn"]
 [ext_resource type="AudioStream" uid="uid://cofyamsctdigr" path="res://assets/sounds/African1.mp3" id="2_hebms"]
+[ext_resource type="Texture2D" uid="uid://dxkwrn6kleumx" path="res://assets/sprites/nightbackgroundwithmoon.png" id="2_jg0a2"]
 
 [node name="Main Menu" type="Node2D"]
 script = ExtResource("1_qrcqn")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_right = 800.0
-offset_bottom = 600.0
-color = Color(0, 0.0627451, 0.160784, 1)
+[node name="ColorRect" type="TextureRect" parent="."]
+offset_right = 1024.0
+offset_bottom = 768.0
+scale = Vector2(0.79, 0.79)
+texture = ExtResource("2_jg0a2")
 
 [node name="Label" type="Label" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 348.0
-offset_top = 19.0
-offset_right = 453.0
-offset_bottom = 42.0
+offset_left = 218.0
+offset_top = 5.0
+offset_right = 582.0
+offset_bottom = 82.0
 grow_horizontal = 2
-scale = Vector2(2.515, 2.515)
 pivot_offset = Vector2(52.405, 0)
 theme_override_colors/font_color = Color(1, 0.578368, 0.516824, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 56
 text = "Deckers Deck"
-
-[node name="Label2" type="Label" parent="."]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 11.625
-offset_top = 572.14
-offset_right = 300.625
-offset_bottom = 595.14
-grow_horizontal = 2
-scale = Vector2(1.145, 1.145)
-pivot_offset = Vector2(52.405, 0)
-text = "This is just a template - Made by n8rd"
 
 [node name="Label3" type="Label" parent="."]
 anchors_preset = 5

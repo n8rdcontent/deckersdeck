@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvosskx4urq5y"]
+
+[ext_resource type="AudioStream" uid="uid://7textemhclca" path="res://assets/sounds/piano-jazz-bossa-nova-cozy-cafe-coffee-shop-music-203916.mp3" id="1_usjuw"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer"]
+stream = ExtResource("1_usjuw")
+volume_db = -13.587
+autoplay = true
