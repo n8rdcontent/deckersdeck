@@ -74,16 +74,22 @@ func addCardToDeck(card_name: String, deckToAdd: Array, value: int, cardType: St
 
 func _deal_cards():
 	# Deal cards to the player and bot
+	await get_tree().create_timer(0.5).timeout
 	for i in range(5):  # Example: 5 cards each
+		
 		var player_card = deck.pop_back()
 		var bot_card = deck.pop_back()
 		
+		
 		player_hand.append(player_card)
+
 		bot_hand.append(bot_card)
+		
 		
 		# Add card visuals
 		_add_card_to_hand(PlayerHand, player_card.name)
 		_add_card_to_hand(BotHand, bot_card.name, true)
+		await get_tree().create_timer(0.4).timeout
 
 func _add_card_to_hand(hand_node: Node, card_name: String, hidden: bool = false):
 	var card_texture = get_card_texture(card_name)
@@ -141,6 +147,7 @@ func _handle_card_selection(card_name: String):
 	if whosTurn == "player":
 		#whosTurn = "bot"
 		print("Player selected card: ", card_name)
+		ButtonSound.play()
 		_move_card_to_middle(card_name)
 		emit_signal("player_selected_card")
 
@@ -203,6 +210,7 @@ func botTurn():
 		var botsChosenCard = bot_hand.pick_random()
 		print(botsChosenCard.name + " is bot's chosen card")
 		await get_tree().create_timer(2.0).timeout
+		ButtonSound.play()
 		_move_card_to_middle(botsChosenCard.name)
 
 func nextTurn():
