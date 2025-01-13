@@ -2,6 +2,7 @@ extends Node2D
 @onready var PlayerHand = $Control/PlayerHand
 @onready var BotHand = $Control/BotHand
 @onready var DeckArea = $Control/DeckArea
+@onready var chosenCardLabel = $Control/chosenCardLabel
 @onready var ButtonSound = $AudioStreamPlayer
 
 signal player_selected_card
@@ -16,8 +17,9 @@ var bot_hand = []
 var deck = []
 var middleDeck = []
 
-func get_card_texture(card_name: String) -> Texture:
+func get_card_texture(card: Object) -> Texture:
 	# Example: card_name should match the filename (e.g., "2_of_hearts.png")
+	var card_name = card.name
 	var texture_path = "res://assets/sprites/cards/%s.png" % card_name
 	'print("Loading texture: ", texture_path)'
 	var texture = load(texture_path)
@@ -36,11 +38,20 @@ func _initialize_game():
 	# Placeholder: Initialize the deck and hands
 	deck = createTestDeck()
 	deck.shuffle()
-	chosencard = deck.pick_random().name
-	print("Chosen Card: " + chosencard[0])
+	setChosenCard()
 	_deal_cards()
 	print("Player Hand: ", player_hand)
 	print("Bot Hand: ", bot_hand)
+
+func setChosenCard():
+	chosencard = deck.pick_random().name
+	print("Chosen Card: " + chosencard[0])
+	if chosencard[0] == "A":
+		chosenCardLabel.text = "ACE"
+	elif chosencard[0] == "K":
+		chosenCardLabel.text = "KING"
+	elif chosencard[0] == "Q":
+		chosenCardLabel.text = "QUEEN"
 
 func _create_deck():
 	# Create a placeholder deck (e.g., numbers 1-10 for simplicity)
@@ -82,19 +93,19 @@ func _deal_cards():
 		
 		
 		player_hand.append(player_card)
-
 		bot_hand.append(bot_card)
 		
 		
 		# Add card visuals
-		_add_card_to_hand(PlayerHand, player_card.name)
-		_add_card_to_hand(BotHand, bot_card.name, true)
-		await get_tree().create_timer(0.4).timeout
+		_add_card_to_hand(PlayerHand, player_card)
+		await get_tree().create_timer(0.2).timeout
+		_add_card_to_hand(BotHand, bot_card, true)
+		await get_tree().create_timer(0.2).timeout
 
-func _add_card_to_hand(hand_node: Node, card_name: String, hidden: bool = false):
-	var card_texture = get_card_texture(card_name)
+func _add_card_to_hand(hand_node: Node, card: Object, hidden: bool = false):
+	var card_texture = get_card_texture(card)
 	if card_texture == null:
-		print("Error: Failed to load texture for card: ", card_name)
+		print("Error: Failed to load texture for card: ", card.name)
 		return
 	
 	var card_sprite = TextureRect.new()
@@ -105,40 +116,53 @@ func _add_card_to_hand(hand_node: Node, card_name: String, hidden: bool = false)
 		card_sprite.texture = preload("res://assets/sprites/cards/Back4.png")
 	
 	# Set the card's name for reference
-	card_sprite.name = card_name
+	card_sprite.name = card.name
 	
 	# Enable input for the card sprite
 	card_sprite.mouse_filter = Control.MOUSE_FILTER_PASS
 	
 	# Connect input_event signal to detect clicks
-	card_sprite.connect("gui_input", Callable(self, "_on_card_clicked").bind(card_name))
+	card_sprite.connect("gui_input", Callable(self, "_on_card_clicked").bind(card))
 	
 	# Add the card sprite to the hand
 	hand_node.add_child(card_sprite)
 
 
 # Function to handle card clicks
-func _on_card_clicked(event: InputEvent, card_name: String):
+func _on_card_clicked(event: InputEvent, card: Object):
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		# Check if the clicked card belongs to the player
 		var is_player_card = false
-		for card in player_hand:
-			if card.name == card_name:
+		
+		for card2 in player_hand:
+			if card2.name == card.name:
 				is_player_card = true
 				break
 
 		if not is_player_card:
 			print("Cannot click on bot's card")
 			print("Player's hand:", player_hand)
-			print("Clicked card:", card_name)
+			print("Clicked card:", card.name)
 			return
 
 		# Player clicked on this card
-		print("Card clicked: ", card_name)
+		print("Card clicked: ", card.name)
 
 		# Perform logic for the card click
-		_handle_card_selection(card_name)
+		_handle_card_selection(card.name)
 
+func _on_button_pressed() -> void:
+	if whosTurn == "player":
+		print("Player called liar")
+		if middleDeck.size() > 0:
+			# Assuming middleDeck and chosencard are arrays of card objects
+			if middleDeck[0].name != chosencard[0].name:
+				print("Bot got exposed")
+			else:
+				print("Bot was telling the truth")
+		else:
+			print("No card played yet")
+			
 
 
 # Handle card selection
@@ -151,35 +175,35 @@ func _handle_card_selection(card_name: String):
 		_move_card_to_middle(card_name)
 		emit_signal("player_selected_card")
 
-func getCardObject(card_name: String):
+func getCardObjectFromPlayer(card_name: String):
 	for card in player_hand:
 		if card.name == card_name:
 			return card
 	return null
 
 
-func _move_card_to_middle(card_name: String):
-	print("Moving card to the middle: ", card_name)
+func _move_card_to_middle(card: Object):
+	print("Moving card to the middle: ", card.name)
 	
 	# Remove the card from the player's hand
 	var card_to_remove = null
 	if whosTurn == "player":
-		for card in player_hand:
-			if card.name == card_name:
-				card_to_remove = card
+		for card2 in player_hand:
+			if card2.name == card.name:
+				card_to_remove = card2
 				break
 		if card_to_remove != null:
 			player_hand.erase(card_to_remove)
-			_remove_card_from_hand(PlayerHand, card_name)
+			_remove_card_from_hand(PlayerHand, card.name)
 	
 	elif whosTurn == "bot":
-		for card in bot_hand:
-			if card.name == card_name:
-				card_to_remove = card
+		for card2 in bot_hand:
+			if card2.name == card.name:
+				card_to_remove = card2
 				break
 		if card_to_remove != null:
 			bot_hand.erase(card_to_remove)
-			_remove_card_from_hand(BotHand, card_name)
+			_remove_card_from_hand(BotHand, card.name)
 
 	# Add the card to the middle deck
 	middleDeck.append(card_name)
@@ -195,10 +219,10 @@ func _remove_card_from_hand(hand_node: Node, card_name: String):
 			card_sprite.queue_free()
 			break
 
-func updateMiddleDeck(card_name: String):
-	var card_texture = get_card_texture(card_name)
+func updateMiddleDeck(card: Object):
+	var card_texture = get_card_texture(card)
 	if card_texture == null:
-		print("Error: Failed to load texture for card: ", card_name)
+		print("Error: Failed to load texture for card: ", card.name)
 		return
 	
 	var card_sprite = TextureRect.new()
@@ -227,7 +251,6 @@ func _process(delta: float) -> void:
 	
 func gameLoop():
 	'print("Game Started")'
-	print("Chosen Card: " + chosencard[0])
 	while true:
 		if whosTurn == "player":
 			print("Player's Turn")

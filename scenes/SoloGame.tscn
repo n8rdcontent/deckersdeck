@@ -40,6 +40,24 @@ offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="chosenCardLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 300.0
+offset_right = 99.0
+offset_bottom = 323.0
+text = "KING"
+
+[node name="Button" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 650.0
+offset_top = 300.0
+offset_right = 735.0
+offset_bottom = 331.0
+text = "CALL LIAR"
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_vkska")
 volume_db = 8.432
+
+[connection signal="pressed" from="Control/Button" to="." method="_on_button_pressed"]
