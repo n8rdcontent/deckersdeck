@@ -30,12 +30,6 @@ class Card:
 		type = _type
 		isHidden = _hidden
 
-func get_card_texture(card: Card) -> Texture:
-	var card_name = card.name
-	var texture_path = "res://assets/sprites/cards/%s.png" % card_name
-	var texture = load(texture_path)
-	return texture
-
 func _ready():
 	print("Solo mode started!")
 	ButtonSound.play()
@@ -49,6 +43,31 @@ func _initialize_game():
 	_deal_cards()
 	print("Player Hand: ", player_hand)
 	print("Bot Hand: ", bot_hand)
+
+func _on_button_pressed() -> void:
+	ButtonSound.play()
+	if(whosTurn == "player"):
+		print("Player pressed LIAR button")
+		if liar_button_check():
+			print("Player wins!")
+		else:
+			print("Player loses!")
+
+func liar_button_check():
+	if middleDeck.front().name[0] == chosencard[0]:
+		return true
+	else:
+		return false
+
+func get_card_texture(card: Card) -> Texture:
+	var card_name = card.name
+	var texture_path = "res://assets/sprites/cards/%s.png" % card_name
+	var texture = load(texture_path)
+	return texture
+
+
+
+
 
 func set_chosen_card():
 	var random_card = deck.pick_random()
