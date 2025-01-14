@@ -28,16 +28,6 @@ func _on_play_solo_button_pressed() -> void:
 	print("Play Solo Clicked!")
 	get_tree().change_scene_to_file("res://scenes/SoloGame.tscn")
 	
-
-
-
-func _on_settings_button_pressed() -> void:
-	print("Settings Clicked!")
-	ButtonSound.play()
-	
-
-
-
 func _on_credits_pressed() -> void:
 	print("Credits Clicked!")
 	ButtonSound.play()
@@ -47,3 +37,8 @@ func _on_credits_pressed() -> void:
 func _on_quit_button_pressed() -> void:
 	print("Quit Clicked Clicked!")
 	get_tree().quit()
+
+
+func _on_tutorial_button_pressed() -> void:
+	ButtonSound.play()
+	print("Credits Clicked!")

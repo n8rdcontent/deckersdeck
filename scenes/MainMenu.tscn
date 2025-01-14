@@ -102,9 +102,9 @@ text = "Join Lobby"
 layout_mode = 2
 text = "Play Solo"
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+[node name="TutorialButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "Settings"
+text = "Tutorial"
 
 [node name="Credits" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -121,6 +121,7 @@ volume_db = 8.432
 [connection signal="pressed" from="VBoxContainer/HostLobbyButton" to="." method="_on_host_lobby_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/JoinLobbyButton" to="." method="_on_join_lobby_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/PlaySoloButton" to="." method="_on_play_solo_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TutorialButton" to="." method="_on_tutorial_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TutorialButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

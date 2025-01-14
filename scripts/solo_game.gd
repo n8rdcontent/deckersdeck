@@ -53,7 +53,7 @@ func _initialize_game():
 	set_chosen_card()
 	_deal_cards()
 	
-	
+
 	
 
 func _on_button_pressed() -> void:
@@ -84,7 +84,10 @@ func liar_button_check() -> bool:
 		return false
 	var last_card = middleDeck.back()
 	print("Last card in middle deck: ", last_card.name)
-	return last_card.name[0] == chosencard[0]
+	if last_card.name[0] == chosencard[0] or last_card.name[0] == "J":
+		return true
+	else:
+		return false
 
 func get_card_texture(card: Card) -> Texture:
 	var card_name = card.name
@@ -94,6 +97,10 @@ func get_card_texture(card: Card) -> Texture:
 
 func set_chosen_card():
 	var random_card = deck.pick_random()
+	while true:
+		if random_card.type != "Joker":
+			break
+		random_card = deck.pick_random()
 	chosencard = random_card.name
 	print("Chosen Card: " + chosencard[0])
 	if chosencard[0] == "A":
@@ -102,33 +109,43 @@ func set_chosen_card():
 		chosenCardLabel.text = "KING"
 	elif chosencard[0] == "Q":
 		chosenCardLabel.text = "QUEEN"
+	elif chosencard[0] == "J":
+		chosenCardLabel.text = "ERROR CHOSEN CARD IS JOKER"
 
 func create_test_deck() -> Array:
 	var testDeck = []
 	add_card_to_deck("A1", testDeck, 14, "Ace")
 	add_card_to_deck("A2", testDeck, 14, "Ace")
-	add_card_to_deck("A3", testDeck, 14, "Ace")
+	'add_card_to_deck("A3", testDeck, 14, "Ace")'
 	add_card_to_deck("A4", testDeck, 14, "Ace")
 	add_card_to_deck("A5", testDeck, 14, "Ace")
-	add_card_to_deck("A6", testDeck, 14, "Ace")
-	'add_card_to_deck("A7", testDeck, 14, "Ace")
-	add_card_to_deck("A8", testDeck, 14, "Ace")'
+	'add_card_to_deck("A6", testDeck, 14, "Ace")'
+	add_card_to_deck("A7", testDeck, 14, "Ace")
+	'add_card_to_deck("A8", testDeck, 14, "Ace")'
+
 	add_card_to_deck("K1", testDeck, 13, "King")
 	add_card_to_deck("K2", testDeck, 13, "King")
-	add_card_to_deck("K3", testDeck, 13, "King")
+	'add_card_to_deck("K3", testDeck, 13, "King")'
 	add_card_to_deck("K4", testDeck, 13, "King")
 	add_card_to_deck("K5", testDeck, 13, "King")
-	add_card_to_deck("K6", testDeck, 13, "King")
-	'add_card_to_deck("K7", testDeck, 13, "King")
-	add_card_to_deck("K8", testDeck, 13, "King")'
+	'add_card_to_deck("K6", testDeck, 13, "King")'
+	add_card_to_deck("K7", testDeck, 13, "King")
+	'add_card_to_deck("K8", testDeck, 13, "King")'
+
 	add_card_to_deck("Q1", testDeck, 12, "Queen")
 	add_card_to_deck("Q2", testDeck, 12, "Queen")
-	add_card_to_deck("Q3", testDeck, 12, "Queen")
+	'add_card_to_deck("Q3", testDeck, 12, "Queen")'
 	add_card_to_deck("Q4", testDeck, 12, "Queen")
 	add_card_to_deck("Q5", testDeck, 12, "Queen")
-	add_card_to_deck("Q6", testDeck, 12, "Queen")
-	'add_card_to_deck("Q7", testDeck, 12, "Queen")
-	add_card_to_deck("Q8", testDeck, 12, "Queen")'
+	'add_card_to_deck("Q6", testDeck, 12, "Queen")'
+	add_card_to_deck("Q7", testDeck, 12, "Queen")
+	'add_card_to_deck("Q8", testDeck, 12, "Queen")'
+
+	add_card_to_deck("J2", testDeck, 99, "Joker")
+	add_card_to_deck("J4", testDeck, 99, "Joker")
+	add_card_to_deck("J5", testDeck, 99, "Joker")
+	'add_card_to_deck("J7", testDeck, 99, "Joker")'
+	
 	return testDeck
 
 func add_card_to_deck(card_name: String, deck_to_add: Array, value: int, card_type: String):
@@ -285,3 +302,8 @@ func next_turn():
 	elif whosTurn == "player":
 		whosTurn = "bot"
 		bot_turn()
+
+
+func _on_restart_button_pressed() -> void:
+	get_tree().reload_current_scene()
+	pass # Replace with function body.

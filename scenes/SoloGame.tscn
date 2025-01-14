@@ -100,6 +100,14 @@ offset_right = 735.0
 offset_bottom = 331.0
 text = "CALL LIAR"
 
+[node name="RestartButton" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 91.0
+offset_bottom = 43.0
+text = "RESTART"
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_vkska")
 volume_db = 8.432
@@ -112,3 +120,4 @@ pitch_scale = 0.9
 stream = ExtResource("4_0tij4")
 
 [connection signal="pressed" from="Control/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Control/RestartButton" to="." method="_on_restart_button_pressed"]
